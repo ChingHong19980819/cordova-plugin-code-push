@@ -63,10 +63,7 @@ var FileUtil = (function () {
         });
     };
     FileUtil.getDirectory = function (rootUri, path, createIfNotExists, callback) {
-        console.log('file')
-        console.log(rootUri)
-        console.log(path)
-        console.log(createIfNotExists)
+        
         var pathArray = path.split("/");
         var currentDir;
         var currentIndex = 0;
@@ -76,24 +73,23 @@ var FileUtil = (function () {
         };
         var rootDirSuccess = function (appDir) {
             if (!createIfNotExists) {
-                console.log('a1')
+                console.log(appDir)
+                console.log(path)
                 appDir.getDirectory(path, { create: false, exclusive: false }, function (directoryEntry) { callback(null, directoryEntry); }, appDirError);
             }
             else {
                 currentDir = appDir;
                 if (currentIndex >= pathArray.length) {
-                    console.log('a2')
                     callback(null, appDir);
                 }
                 else {
                     var currentPath = pathArray[currentIndex];
                     currentIndex++;
                     if (currentPath) {
-                        console.log('a3')
+                        console.log(rootUri, path)
                         FileUtil.getOrCreateSubDirectory(appDir, currentPath, createIfNotExists, rootDirSuccess, appDirError);
                     }
                     else {
-                        console.log('a4')
                         rootDirSuccess(appDir);
                     }
                 }
@@ -277,9 +273,13 @@ var FileUtil = (function () {
                 fail(error);
             }
             else {
+                console.log(parent)
+                console.log(path)
                 parent.getDirectory(path, { create: true, exclusive: false }, success, fail);
             }
         };
+        console.log(parent)
+        console.log(path)
         parent.getDirectory(path, { create: false, exclusive: false }, success, failFirst);
     };
     return FileUtil;
