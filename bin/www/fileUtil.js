@@ -63,33 +63,44 @@ var FileUtil = (function () {
         });
     };
     FileUtil.getDirectory = function (rootUri, path, createIfNotExists, callback) {
+        console.log('file')
+        console.log(rootUri)
+        console.log(path)
+        console.log(createIfNotExists)
         var pathArray = path.split("/");
         var currentDir;
         var currentIndex = 0;
         var appDirError = function (error) {
+            console.log(error)
             callback(new Error("Could not get application subdirectory. Error code: " + error.code), null);
         };
         var rootDirSuccess = function (appDir) {
             if (!createIfNotExists) {
+                console.log('a1')
                 appDir.getDirectory(path, { create: false, exclusive: false }, function (directoryEntry) { callback(null, directoryEntry); }, appDirError);
             }
             else {
                 currentDir = appDir;
                 if (currentIndex >= pathArray.length) {
+                    console.log('a2')
                     callback(null, appDir);
                 }
                 else {
                     var currentPath = pathArray[currentIndex];
                     currentIndex++;
                     if (currentPath) {
+                        console.log('a3')
                         FileUtil.getOrCreateSubDirectory(appDir, currentPath, createIfNotExists, rootDirSuccess, appDirError);
                     }
                     else {
+                        console.log('a4')
                         rootDirSuccess(appDir);
                     }
                 }
             }
         };
+
+        console.log('a5')
         window.resolveLocalFileSystemURL(rootUri, rootDirSuccess, appDirError);
     };
     FileUtil.dataDirectoryExists = function (path, callback) {
